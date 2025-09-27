@@ -1,18 +1,38 @@
-# 🤖 Advanced Home Assistant AI Integration Setup
+# 🤖 Advanced Home Assistant AI Integration Setup v2.0.0
 
-**Complete documentation for a production-ready AI-powered Home Assistant system with ChatGPT, Claude, and Gemini Pro**
+**Complete, organized repository for production-ready AI-powered Home Assistant with ChatGPT, Claude, and Gemini Pro**
+
+## 🏷️ Current Version: v2.0.0 (Organized Structure)
+- **Easy Integration**: Modular directory structure
+- **Future-Proof**: Semantic versioning and compatibility tracking
+- **Production-Ready**: Complete security, documentation, and examples
+
+## 📁 Quick Navigation
+
+### 🚀 **Ready to Deploy?**
+1. **[📋 Quick Start](#-quick-start)** - Deploy in 15 minutes
+2. **[📖 Guided Setup](#-guided-setup)** - Complete installation process
+3. **[🎯 Examples](#-examples)** - Advanced automations and scripts
+
+### 📁 **Repository Structure**
+- **[`config/`](config/)** - Core Home Assistant configuration files
+- **[`guides/`](guides/)** - Step-by-step implementation guides
+- **[`templates/`](templates/)** - Secure templates for sensitive data
+- **[`examples/`](examples/)** - Advanced automation and script examples
+- **[`docs/`](docs/)** - Technical documentation and validation
 
 ## 📋 Table of Contents
 
 - [🎯 Overview](#-overview)
+- [📦 Quick Start](#-quick-start)
+- [📖 Guided Setup](#-guided-setup)
 - [🏗️ System Architecture](#️-system-architecture)
 - [🤖 AI Integration Summary](#-ai-integration-summary)
-- [⚙️ Installation Guide](#️-installation-guide)
-- [🔧 Configuration Details](#-configuration-details)
-- [🚀 Usage Examples](#-usage-examples)
+- [🎯 Examples](#-examples)
 - [💰 Cost Analysis](#-cost-analysis)
 - [🔒 Security Considerations](#-security-considerations)
 - [📊 System Requirements](#-system-requirements)
+- [🏷️ Version Management](#️-version-management)
 - [🛠️ Troubleshooting](#️-troubleshooting)
 
 ## 🎯 Overview
@@ -82,48 +102,46 @@ This repository contains a complete Home Assistant setup featuring:
 "default|home|control|automation" → Claude
 ```
 
-## ⚙️ Installation Guide
+## 📦 Quick Start
+
+### ⚡ 15-Minute Deployment
+
+1. **Copy Core Configuration**:
+   ```bash
+   # Copy configuration files to Home Assistant
+   cp config/* /homeassistant/
+   cp templates/secrets_template.yaml /homeassistant/secrets.yaml
+   ```
+
+2. **Add Your API Keys**:
+   ```bash
+   # Edit secrets.yaml with your actual API keys
+   nano /homeassistant/secrets.yaml
+   ```
+
+3. **Restart Home Assistant** and install required add-ons:
+   - Piper (TTS), Whisper (STT), OpenWakeWord
+
+4. **Test**: Say "Hey Assistant, are you working?"
+
+## 📖 Guided Setup
 
 ### Prerequisites
 
 1. **Home Assistant OS 16.2+**
-2. **API Keys** from all three providers:
-   - OpenAI: https://platform.openai.com/api-keys
-   - Anthropic: https://console.anthropic.com/
-   - Google AI: https://aistudio.google.com/app/apikey
+2. **API Keys** from all three providers - Get detailed instructions in [`guides/API_SETUP.md`](guides/API_SETUP.md)
+3. **Hardware**: Intel NUC or equivalent with 8GB+ RAM
 
-### Step 1: Configuration Files
+### Complete Installation Process
 
-1. **Copy configuration files** from this repository:
-   ```bash
-   # Copy to your HA config directory
-   cp configuration.yaml /homeassistant/
-   cp scripts.yaml /homeassistant/
-   cp automations.yaml /homeassistant/
-   ```
+1. **Follow Step-by-Step Guide**: [`guides/INSTALLATION.md`](guides/INSTALLATION.md)
+2. **Configure API Keys**: [`guides/API_SETUP.md`](guides/API_SETUP.md)
+3. **Learn Voice Commands**: [`guides/VOICE_COMMANDS.md`](guides/VOICE_COMMANDS.md)
+4. **Validate Deployment**: [`docs/VALIDATION.md`](docs/VALIDATION.md)
 
-2. **Update secrets.yaml** with your API keys:
-   ```yaml
-   anthropic_api_key: "sk-ant-your-actual-key"
-   openai_api_key: "sk-your-actual-openai-key"
-   google_generative_ai_api_key: "AIza-your-actual-google-key"
-   ```
+### Hardware Migration (Optional)
 
-### Step 2: Add-on Installation
-
-Install these add-ons from the Home Assistant Add-on Store:
-
-- **Piper** (Text-to-Speech)
-- **Whisper** (Speech-to-Text)
-- **OpenWakeWord** (Wake word detection)
-
-### Step 3: Restart and Configure
-
-1. **Restart Home Assistant** to load new integrations
-2. **Create Voice Assistants**:
-   - Settings → Voice Assistants → Add Assistant
-   - Create three assistants (one for each AI provider)
-3. **Test AI integrations** using Developer Tools
+If migrating from USB to NVMe storage: [`guides/USB_REMOVAL.md`](guides/USB_REMOVAL.md)
 
 ## 🔧 Configuration Details
 
@@ -186,54 +204,33 @@ expose:
     - "person.*"
 ```
 
-## 🚀 Usage Examples
+## 🎯 Examples
 
-### Voice Commands
+### 🎤 Voice Commands
+Comprehensive voice command examples: [`guides/VOICE_COMMANDS.md`](guides/VOICE_COMMANDS.md)
 
-#### Creative Tasks (→ ChatGPT)
-- *"Tell me a bedtime story about smart lights"*
-- *"Create a funny poem about my robot vacuum"*
-- *"Brainstorm automation ideas"*
+**Quick Examples:**
+- *"Tell me a creative story"* → ChatGPT
+- *"Analyze my energy usage"* → Gemini Pro
+- *"Turn on movie night lighting"* → Claude
 
-#### Technical Tasks (→ Gemini Pro)
-- *"Analyze my energy consumption patterns"*
-- *"Calculate optimal thermostat settings"*
-- *"Debug this automation code"*
+### 🤖 Advanced Automations
+Ready-to-use AI automations: [`examples/advanced_automations.yaml`](examples/advanced_automations.yaml)
 
-#### Home Control (→ Claude)
-- *"Turn on evening ambiance lighting"*
-- *"Set the house to away mode"*
-- *"What's the status of all sensors?"*
+**Featured Automations:**
+- **AI Morning Routine**: Weather-adaptive morning optimization
+- **Intelligent Energy Management**: AI-powered consumption control
+- **Smart Security Response**: AI-analyzed security event handling
+- **Weather-Adaptive Home**: Automatic climate and lighting adjustments
 
-### Script Usage
+### 🛠️ Custom Scripts
+Reusable AI script templates: [`examples/custom_scripts.yaml`](examples/custom_scripts.yaml)
 
-#### AI Model Comparison
-```yaml
-service: script.ai_model_comparison
-data:
-  query: "What's the best temperature for sleeping?"
-```
-
-#### Smart AI Router
-```yaml
-service: script.smart_ai_selector
-data:
-  task: "Calculate energy savings from LED upgrade"
-```
-
-### Advanced Automations
-
-#### AI-Powered Evening Scene
-```yaml
-- trigger:
-    platform: sun
-    event: sunset
-  action:
-    - service: conversation.process
-      data:
-        text: "Suggest optimal evening lighting based on weather"
-        agent_id: conversation.anthropic
-```
+**Available Scripts:**
+- **Smart Provider Router**: Intelligent AI selection based on complexity
+- **AI Consensus Builder**: Multiple AI opinions with consensus analysis
+- **Adaptive Scene Creator**: AI-generated custom scenes
+- **Predictive Maintenance**: AI-powered maintenance scheduling
 
 ## 💰 Cost Analysis
 
@@ -334,24 +331,73 @@ data:
 # Settings → Voice Assistants → Assist → Exposed Entities
 ```
 
-## 📝 File Structure
+## 🏷️ Version Management
+
+### Current Version: **v2.0.0** (Organized Structure)
+
+**Git Tags Available:**
+- `v2.0.0` - Current organized structure release
+- `ai-integration-complete` - All AI providers integrated
+- `voice-processing-ready` - Local voice processing complete
+- `security-hardened` - Security features implemented
+- `ha-2025.9` - Home Assistant 2025.9.x compatible
+
+### Compatibility Matrix
+
+| Version | Home Assistant | AI Models | Features |
+|---------|---------------|-----------|----------|
+| v2.0.0 | 2025.9.4+ | Claude 3.5, GPT-4o, Gemini 1.5 Pro | Full AI + Voice |
+| v1.1.0 | 2025.9.4+ | Claude 3.5, GPT-4o, Gemini 1.5 Pro | Full AI Integration |
+| v1.0.0 | 2025.9.4+ | Basic AI setup | Initial Release |
+
+### Future Roadmap
+- **v2.1.0**: Extended automation examples
+- **v2.2.0**: Additional AI provider support
+- **v3.0.0**: Home Assistant 2026.x compatibility
+
+## 📁 Repository Structure
 
 ```
-home-assistant-ai-setup/
-├── README.md                 # This documentation
-├── configuration.yaml        # Main HA configuration
-├── secrets_template.yaml     # API key template
-├── scripts.yaml              # AI routing and comparison scripts
-├── automations.yaml          # AI-powered automations
-├── docs/                     # Additional documentation
-│   ├── INSTALLATION.md       # Detailed installation guide
-│   ├── API_SETUP.md           # API key setup instructions
-│   └── TROUBLESHOOTING.md     # Detailed troubleshooting
-└── examples/                 # Usage examples
-    ├── voice_commands.md      # Voice command examples
-    ├── automations.yaml       # Example automations
-    └── scripts.yaml           # Example scripts
+home-assistant-ai-setup/                    # v2.0.0 Organized Structure
+├── 📋 README.md                           # Main documentation (this file)
+├── 📋 PROJECT_STRUCTURE.md                # Detailed organization guide
+├── 📁 config/                             # → Copy to /homeassistant/
+│   ├── configuration.yaml                 # Main HA configuration with AI
+│   ├── scripts.yaml                       # AI routing and comparison
+│   └── automations.yaml                   # Ready for custom automations
+├── 📁 templates/                          # → Customize before deployment
+│   └── secrets_template.yaml              # API key template (secure)
+├── 📁 guides/                             # → Follow for implementation
+│   ├── INSTALLATION.md                    # Complete setup process
+│   ├── API_SETUP.md                       # API key configuration
+│   ├── VOICE_COMMANDS.md                  # Voice command examples
+│   └── USB_REMOVAL.md                     # Hardware migration guide
+├── 📁 docs/                               # → Reference during deployment
+│   ├── VALIDATION.md                      # Pre-deployment checklist
+│   └── CHANGELOG.md                       # Complete change history
+└── 📁 examples/                           # → Advanced features
+    ├── advanced_automations.yaml          # 12 AI automation examples
+    └── custom_scripts.yaml                # 10 reusable script templates
 ```
+
+### Integration Workflows
+
+#### 🚀 **Quick Deploy** (15 min)
+```bash
+cp config/* /homeassistant/
+cp templates/secrets_template.yaml /homeassistant/secrets.yaml
+# Edit secrets.yaml, restart HA, install add-ons
+```
+
+#### 📖 **Guided Setup** (45 min)
+1. Follow `guides/INSTALLATION.md`
+2. Configure APIs with `guides/API_SETUP.md`
+3. Validate with `docs/VALIDATION.md`
+
+#### 🎯 **Advanced Features** (2+ hours)
+1. Deploy examples from `examples/`
+2. Customize automations for your home
+3. Optimize performance and costs
 
 ## 🤝 Contributing
 
