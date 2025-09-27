@@ -1,0 +1,100 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Anthropic Claude Integration
+anthropic:
+  api_key: !secret anthropic_api_key
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 1000
+  temperature: 0.7
+
+# Conversation Integration
+conversation:
+
+# Piper TTS for Local Voice
+tts:
+  - platform: piper
+    voice: "en_US-amy-medium"
+    cache: true
+
+# Text-to-Speech Configuration  
+  - platform: google_translate
+    cache: true
+    time_memory: 300
+    service_name: google_say
+
+# Speech-to-Text Configuration
+stt:
+  - platform: faster_whisper
+    model: "base"
+    language: "en"
+
+# Assist Pipeline Configuration
+assist_pipeline:
+
+# Wake Word Detection (OpenWakeWord)
+wake_word:
+  - platform: openwakeword
+    threshold: 0.5
+    trigger_level: 1
+
+# AI Entity Exposure Controls
+expose:
+  include_entity_globs:
+    - "light.*"
+    - "switch.*"
+    - "sensor.temperature*"
+    - "sensor.humidity*"
+    - "climate.*"
+    - "media_player.*"
+    - "automation.*"
+    - "script.*"
+    - "scene.*"
+  exclude_entities:
+    - "sensor.*_password"
+    - "sensor.*_token" 
+    - "device_tracker.*"
+    - "person.*"
+    - "zone.*"
+
+# OpenAI ChatGPT Integration
+openai_conversation:
+  api_key: !secret openai_api_key
+  model: "gpt-4o"  # Latest GPT-4o model
+  max_tokens: 1000
+  temperature: 0.7
+  top_p: 1.0
+  functions: true  # Enable function calling
+
+# Google Gemini Pro Integration  
+google_generative_ai_conversation:
+  api_key: !secret google_generative_ai_api_key
+  model: "models/gemini-1.5-pro-latest"
+  max_tokens: 1000
+  temperature: 0.7
+  top_p: 0.95
+  top_k: 40
+
+# AI Task Routing Configuration
+ai_task_router:
+  default_model: "anthropic"  # Claude as default
+  routing_rules:
+    # ChatGPT for creative and complex reasoning
+    - pattern: "creative|story|poem|joke|brainstorm"
+      model: "openai"
+    # Gemini for analysis and technical tasks  
+    - pattern: "analyze|calculate|technical|code|debug"
+      model: "google_generative_ai"
+    # Claude for general home automation and conversation
+    - pattern: ".*"  # Default catch-all
+      model: "anthropic"
+

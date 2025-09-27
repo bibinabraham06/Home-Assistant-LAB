@@ -1,0 +1,72 @@
+# Multi-AI Scripts for Home Assistant
+
+ai_model_comparison:
+  alias: "Compare AI Model Responses"
+  description: "Test the same query across all three AI models"
+  fields:
+    query:
+      description: "Question to ask all AI models"
+      example: "What is the optimal temperature for sleeping?"
+  sequence:
+    - service: conversation.process
+      data:
+        text: "{{ query }}"
+        agent_id: conversation.anthropic
+      response_variable: claude_response
+    - service: conversation.process  
+      data:
+        text: "{{ query }}"
+        agent_id: conversation.openai
+      response_variable: chatgpt_response
+    - service: conversation.process
+      data:
+        text: "{{ query }}"
+        agent_id: conversation.google_generative_ai
+      response_variable: gemini_response
+    - service: persistent_notification.create
+      data:
+        title: "🤖 AI Model Comparison"
+        message: |
+          **Claude:** {{ claude_response.response.speech.plain.speech }}
+          
+          **ChatGPT:** {{ chatgpt_response.response.speech.plain.speech }}
+          
+          **Gemini:** {{ gemini_response.response.speech.plain.speech }}
+
+smart_ai_selector:
+  alias: "Smart AI Task Router"
+  description: "Automatically select best AI for the task"
+  fields:
+    task:
+      description: "Task description"
+      example: "Calculate energy savings from LED upgrade"
+  sequence:
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ creative in task or story in task or poem in task }}"
+          sequence:
+            - service: conversation.process
+              data:
+                text: "{{ task }}"
+                agent_id: conversation.openai
+              response_variable: ai_response
+        - conditions:
+            - condition: template  
+              value_template: "{{ analyze in task or calculate in task or technical in task }}"
+          sequence:
+            - service: conversation.process
+              data:
+                text: "{{ task }}"
+                agent_id: conversation.google_generative_ai
+              response_variable: ai_response
+        default:
+          - service: conversation.process
+            data:
+              text: "{{ task }}"
+              agent_id: conversation.anthropic
+            response_variable: ai_response
+    - service: tts.speak
+      data:
+        message: "{{ ai_response.response.speech.plain.speech }}"
+
