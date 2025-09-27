@@ -1,0 +1,280 @@
+# 🤖 Advanced AI-Powered Automations
+#
+# These examples demonstrate sophisticated AI integration patterns
+# Copy and customize for your specific home setup
+
+# AI-Powered Morning Routine
+ai_morning_routine:
+  alias: "AI Morning Routine"
+  description: "AI analyzes weather and schedules to optimize morning routine"
+  trigger:
+    - platform: time
+      at: "06:30:00"
+  condition:
+    - condition: state
+      entity_id: binary_sensor.workday_sensor
+      state: 'on'
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Analyze today's weather forecast and my calendar.
+          Suggest optimal lighting, temperature, and timing for my morning routine.
+          Consider energy efficiency and comfort.
+        agent_id: conversation.google_generative_ai
+      response_variable: morning_analysis
+    - service: conversation.process
+      data:
+        text: >
+          Based on this analysis: {{ morning_analysis.response.speech.plain.speech }}
+          Execute appropriate morning scene with smart lighting and climate control.
+        agent_id: conversation.anthropic
+    - service: notify.mobile_app
+      data:
+        message: "AI Morning Routine: {{ morning_analysis.response.speech.plain.speech }}"
+
+# Intelligent Energy Management
+ai_energy_optimizer:
+  alias: "AI Energy Optimizer"
+  description: "AI monitors energy usage and optimizes consumption"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.current_power
+      above: 3000
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Current power usage is {{ states('sensor.current_power') }}W.
+          Analyze which non-essential devices can be temporarily disabled
+          to reduce consumption while maintaining comfort.
+        agent_id: conversation.google_generative_ai
+      response_variable: energy_analysis
+    - service: conversation.process
+      data:
+        text: >
+          Implement these energy optimizations: {{ energy_analysis.response.speech.plain.speech }}
+          Only adjust non-critical systems and notify me of changes.
+        agent_id: conversation.anthropic
+
+# Creative Evening Entertainment
+ai_entertainment_curator:
+  alias: "AI Entertainment Curator"
+  description: "AI suggests personalized entertainment based on mood and weather"
+  trigger:
+    - platform: sun
+      event: sunset
+    - platform: state
+      entity_id: binary_sensor.family_home
+      to: 'on'
+      for: "00:30:00"
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          It's evening and the family is home. Consider today's weather,
+          what day of the week it is, and suggest creative entertainment options.
+          Include lighting scenes, music suggestions, and activity ideas.
+        agent_id: conversation.openai
+      response_variable: entertainment_ideas
+    - service: tts.speak
+      data:
+        message: >
+          Good evening! Here are some entertainment suggestions:
+          {{ entertainment_ideas.response.speech.plain.speech }}
+
+# Intelligent Security Response
+ai_security_advisor:
+  alias: "AI Security Advisor"
+  description: "AI analyzes security events and suggests appropriate responses"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_detector
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_sensor
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.home_security
+      state: 'armed_away'
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Security event detected: {{ trigger.entity_id }} activated at {{ now() }}.
+          Current security mode is armed_away. Analyze the situation and
+          recommend appropriate security response considering time and location.
+        agent_id: conversation.google_generative_ai
+      response_variable: security_analysis
+    - service: conversation.process
+      data:
+        text: >
+          Execute security response: {{ security_analysis.response.speech.plain.speech }}
+          Prioritize safety while minimizing false alarms.
+        agent_id: conversation.anthropic
+    - service: notify.family_phones
+      data:
+        message: "Security Analysis: {{ security_analysis.response.speech.plain.speech }}"
+
+# Weather-Adaptive Home Management
+ai_weather_adaptation:
+  alias: "AI Weather Adaptation"
+  description: "AI adapts home settings based on weather conditions"
+  trigger:
+    - platform: state
+      entity_id: weather.home
+      attribute: temperature
+    - platform: state
+      entity_id: weather.home
+      attribute: condition
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Weather update: {{ states.weather.home.state }} with temperature
+          {{ state_attr('weather.home', 'temperature') }}°F.
+          Suggest home adjustments for comfort and energy efficiency.
+          Consider HVAC, lighting, and window covering recommendations.
+        agent_id: conversation.google_generative_ai
+      response_variable: weather_recommendations
+    - service: conversation.process
+      data:
+        text: >
+          Implement weather adaptations: {{ weather_recommendations.response.speech.plain.speech }}
+          Make gradual adjustments to maintain comfort.
+        agent_id: conversation.anthropic
+
+# AI Guest Mode
+ai_guest_welcome:
+  alias: "AI Guest Welcome"
+  description: "AI personalizes home environment for guests"
+  trigger:
+    - platform: state
+      entity_id: input_boolean.guest_mode
+      to: 'on'
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Guest mode activated. Create a welcoming atmosphere with appropriate
+          lighting, temperature, and ambiance. Suggest a brief welcome message
+          and any helpful information guests should know about the smart home.
+        agent_id: conversation.openai
+      response_variable: guest_setup
+    - service: scene.turn_on
+      data:
+        entity_id: scene.guest_welcome
+    - service: tts.speak
+      data:
+        message: "{{ guest_setup.response.speech.plain.speech }}"
+
+# Intelligent Maintenance Reminder
+ai_maintenance_scheduler:
+  alias: "AI Maintenance Scheduler"
+  description: "AI tracks usage and schedules predictive maintenance"
+  trigger:
+    - platform: time
+      at: "09:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 }}"  # First day of month
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Monthly maintenance check. Analyze device usage patterns,
+          filter replacement schedules, and system performance.
+          Recommend maintenance tasks based on usage data and time since last service.
+        agent_id: conversation.google_generative_ai
+      response_variable: maintenance_plan
+    - service: calendar.create_event
+      data:
+        summary: "Smart Home Maintenance"
+        description: "{{ maintenance_plan.response.speech.plain.speech }}"
+        start_date_time: "{{ (now() + timedelta(days=7)).strftime('%Y-%m-%d 10:00:00') }}"
+
+# AI Mood Lighting
+ai_mood_lighting:
+  alias: "AI Mood Lighting"
+  description: "AI adjusts lighting based on activities and preferences"
+  trigger:
+    - platform: state
+      entity_id: media_player.living_room_tv
+      to: 'on'
+    - platform: state
+      entity_id: input_select.activity_mode
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Activity detected: {{ trigger.entity_id }} changed to {{ trigger.to_state.state }}.
+          Current time is {{ now().strftime('%H:%M') }}.
+          Create an optimal lighting scene for this activity considering
+          circadian rhythm, energy efficiency, and ambiance.
+        agent_id: conversation.openai
+      response_variable: lighting_suggestion
+    - service: conversation.process
+      data:
+        text: >
+          Implement lighting: {{ lighting_suggestion.response.speech.plain.speech }}
+          Adjust gradually over 2 minutes for comfort.
+        agent_id: conversation.anthropic
+
+# Smart Cooking Assistant
+ai_cooking_helper:
+  alias: "AI Cooking Assistant"
+  description: "AI provides cooking guidance and kitchen automation"
+  trigger:
+    - platform: state
+      entity_id: sensor.kitchen_activity
+      to: 'cooking'
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Kitchen cooking mode activated. Suggest optimal lighting for cooking,
+          set appropriate ventilation, and offer to provide cooking tips or
+          timer assistance. Consider current time and any scheduled meals.
+        agent_id: conversation.openai
+      response_variable: cooking_assistance
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_main
+        brightness_pct: 100
+        color_temp: 250  # Bright white for cooking
+    - service: tts.speak
+      data:
+        message: "{{ cooking_assistance.response.speech.plain.speech }}"
+
+# AI Sleep Optimization
+ai_sleep_optimizer:
+  alias: "AI Sleep Optimizer"
+  description: "AI optimizes bedroom environment for quality sleep"
+  trigger:
+    - platform: time
+      at: "21:30:00"  # 30 minutes before typical bedtime
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Bedtime approaching in 30 minutes. Analyze ideal sleep environment
+          considering temperature, lighting, noise levels, and circadian rhythm.
+          Suggest gradual adjustments to prepare the bedroom for optimal sleep.
+        agent_id: conversation.google_generative_ai
+      response_variable: sleep_optimization
+    - service: conversation.process
+      data:
+        text: >
+          Begin sleep preparation: {{ sleep_optimization.response.speech.plain.speech }}
+          Implement changes gradually to support natural sleep onset.
+        agent_id: conversation.anthropic
+    - service: climate.set_temperature
+      data:
+        entity_id: climate.bedroom
+        temperature: 68  # Optimal sleep temperature
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom
+        brightness_pct: 10
+        rgb_color: [255, 100, 0]  # Warm, dim light

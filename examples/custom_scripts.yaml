@@ -1,0 +1,333 @@
+# 🛠️ Custom AI Script Templates
+#
+# Reusable script templates for common AI integration patterns
+# Customize these templates for your specific needs
+
+# Dynamic AI Provider Selection
+smart_provider_router:
+  alias: "Smart AI Provider Router"
+  description: "Intelligently routes queries based on complexity and cost"
+  fields:
+    query:
+      description: "The question or command to process"
+      example: "How can I optimize my energy usage?"
+    priority:
+      description: "Priority level: low, normal, high"
+      example: "normal"
+  sequence:
+    - choose:
+        # High priority -> Best model regardless of cost
+        - conditions:
+            - condition: template
+              value_template: "{{ priority == 'high' }}"
+          sequence:
+            - service: conversation.process
+              data:
+                text: "{{ query }}"
+                agent_id: conversation.openai  # Most capable
+              response_variable: ai_response
+        # Complex analysis -> Gemini Pro
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ 'analyze' in query.lower() or
+                   'calculate' in query.lower() or
+                   'data' in query.lower() or
+                   'technical' in query.lower() }}
+          sequence:
+            - service: conversation.process
+              data:
+                text: "{{ query }}"
+                agent_id: conversation.google_generative_ai
+              response_variable: ai_response
+        # Creative tasks -> ChatGPT
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ 'creative' in query.lower() or
+                   'story' in query.lower() or
+                   'idea' in query.lower() or
+                   'brainstorm' in query.lower() }}
+          sequence:
+            - service: conversation.process
+              data:
+                text: "{{ query }}"
+                agent_id: conversation.openai
+              response_variable: ai_response
+        # Default -> Claude (cost-effective)
+        default:
+          - service: conversation.process
+            data:
+              text: "{{ query }}"
+              agent_id: conversation.anthropic
+            response_variable: ai_response
+    - service: persistent_notification.create
+      data:
+        title: "🤖 AI Response"
+        message: "{{ ai_response.response.speech.plain.speech }}"
+
+# AI Consensus Builder
+ai_consensus_analysis:
+  alias: "AI Consensus Analysis"
+  description: "Gets multiple AI opinions and provides consensus"
+  fields:
+    question:
+      description: "Question requiring multiple perspectives"
+      example: "Should I upgrade my HVAC system?"
+  sequence:
+    - parallel:
+        - service: conversation.process
+          data:
+            text: "{{ question }}"
+            agent_id: conversation.anthropic
+          response_variable: claude_opinion
+        - service: conversation.process
+          data:
+            text: "{{ question }}"
+            agent_id: conversation.openai
+          response_variable: chatgpt_opinion
+        - service: conversation.process
+          data:
+            text: "{{ question }}"
+            agent_id: conversation.google_generative_ai
+          response_variable: gemini_opinion
+    - service: conversation.process
+      data:
+        text: >
+          Analyze these three AI responses and provide a balanced consensus:
+
+          Claude says: {{ claude_opinion.response.speech.plain.speech }}
+
+          ChatGPT says: {{ chatgpt_opinion.response.speech.plain.speech }}
+
+          Gemini says: {{ gemini_opinion.response.speech.plain.speech }}
+
+          Provide a summary that highlights agreements, disagreements, and your recommendation.
+        agent_id: conversation.anthropic
+      response_variable: consensus
+    - service: persistent_notification.create
+      data:
+        title: "🎯 AI Consensus"
+        message: "{{ consensus.response.speech.plain.speech }}"
+
+# Contextual Home Status Report
+ai_status_reporter:
+  alias: "AI Home Status Reporter"
+  description: "AI analyzes and reports home status intelligently"
+  fields:
+    focus_area:
+      description: "Area to focus on: security, energy, comfort, all"
+      example: "energy"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Provide a comprehensive home status report focusing on {{ focus_area }}.
+          Current data:
+          - Temperature: {{ states('sensor.indoor_temperature') }}°F
+          - Humidity: {{ states('sensor.indoor_humidity') }}%
+          - Energy usage: {{ states('sensor.current_power') }}W
+          - Security status: {{ states('alarm_control_panel.home_security') }}
+          - Active lights: {{ states.light | selectattr('state', 'eq', 'on') | list | length }}
+          - Weather: {{ states('weather.home') }}
+
+          Analyze this data and provide insights, recommendations, and any concerns.
+        agent_id: conversation.google_generative_ai
+      response_variable: status_analysis
+    - service: tts.speak
+      data:
+        message: "{{ status_analysis.response.speech.plain.speech }}"
+
+# Adaptive Scene Creator
+ai_scene_creator:
+  alias: "AI Scene Creator"
+  description: "AI creates custom scenes based on context"
+  fields:
+    scene_purpose:
+      description: "Purpose of the scene"
+      example: "romantic dinner"
+    room:
+      description: "Target room"
+      example: "dining room"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Create a {{ scene_purpose }} scene for the {{ room }}.
+          Consider current time ({{ now().strftime('%H:%M') }}),
+          weather ({{ states('weather.home') }}),
+          and available devices in {{ room }}.
+
+          Suggest specific settings for:
+          - Lighting (brightness, color, mood)
+          - Temperature/climate
+          - Music/audio
+          - Any other relevant devices
+
+          Provide settings as a numbered list with specific values.
+        agent_id: conversation.openai
+      response_variable: scene_design
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.last_ai_scene
+        value: "{{ scene_design.response.speech.plain.speech }}"
+    - service: persistent_notification.create
+      data:
+        title: "🎨 Custom Scene: {{ scene_purpose.title() }}"
+        message: "{{ scene_design.response.speech.plain.speech }}"
+
+# Predictive Maintenance Advisor
+ai_maintenance_advisor:
+  alias: "AI Maintenance Advisor"
+  description: "AI predicts maintenance needs based on usage patterns"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Analyze maintenance needs based on device usage:
+
+          System uptime: {{ (now() - states.sensor.uptime.last_changed).days }} days
+          HVAC runtime today: {{ states('sensor.hvac_runtime_today') }} hours
+          Light switch cycles: {{ states('sensor.light_switch_cycles') }}
+          Water usage: {{ states('sensor.daily_water_usage') }} gallons
+          Energy consumption trend: {{ states('sensor.energy_trend') }}
+
+          Predict what maintenance tasks should be prioritized and when.
+          Consider seasonal factors and typical appliance lifespans.
+        agent_id: conversation.google_generative_ai
+      response_variable: maintenance_prediction
+    - service: calendar.create_event
+      data:
+        summary: "Predictive Maintenance Review"
+        description: "{{ maintenance_prediction.response.speech.plain.speech }}"
+        start_date_time: "{{ (now() + timedelta(days=7)).strftime('%Y-%m-%d 09:00:00') }}"
+
+# Smart Energy Coaching
+ai_energy_coach:
+  alias: "AI Energy Coach"
+  description: "AI provides personalized energy efficiency coaching"
+  trigger:
+    - platform: time
+      at: "18:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().weekday() == 6 }}"  # Sunday
+  action:
+    - service: conversation.process
+      data:
+        text: >
+          Weekly energy coaching session. Analyze this week's energy data:
+
+          Total consumption: {{ states('sensor.weekly_energy') }} kWh
+          Peak usage time: {{ states('sensor.peak_usage_time') }}
+          Biggest energy users: {{ states('sensor.top_energy_devices') }}
+          Cost this week: ${{ states('sensor.weekly_energy_cost') }}
+          Compared to last week: {{ states('sensor.energy_week_comparison') }}%
+
+          Provide personalized coaching tips, praise good habits,
+          and suggest specific improvements for next week.
+        agent_id: conversation.anthropic
+      response_variable: energy_coaching
+    - service: notify.family_group
+      data:
+        title: "⚡ Weekly Energy Coach"
+        message: "{{ energy_coaching.response.speech.plain.speech }}"
+
+# Intelligent Guest Services
+ai_guest_concierge:
+  alias: "AI Guest Concierge"
+  description: "AI provides personalized guest assistance"
+  fields:
+    guest_needs:
+      description: "What the guest needs help with"
+      example: "wifi password and house rules"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Guest assistance request: {{ guest_needs }}
+
+          Provide helpful, welcoming information about:
+          - WiFi: Network "HomeNetwork" password "{{ states('input_text.guest_wifi_password') }}"
+          - House rules and courtesy guidelines
+          - Available amenities and how to use smart home features
+          - Emergency contacts and procedures
+          - Local recommendations if relevant
+
+          Be warm, concise, and helpful.
+        agent_id: conversation.openai
+      response_variable: guest_assistance
+    - service: tts.speak
+      data:
+        message: "{{ guest_assistance.response.speech.plain.speech }}"
+    - service: persistent_notification.create
+      data:
+        title: "🏠 Guest Information"
+        message: "{{ guest_assistance.response.speech.plain.speech }}"
+
+# Dynamic Automation Optimizer
+ai_automation_optimizer:
+  alias: "AI Automation Optimizer"
+  description: "AI suggests improvements to existing automations"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Review my current automations and suggest optimizations:
+
+          Active automations: {{ states.automation | selectattr('state', 'eq', 'on') | list | length }}
+          Most triggered: {{ states('sensor.most_triggered_automation') }}
+          Failed executions: {{ states('sensor.failed_automations_today') }}
+          Average response time: {{ states('sensor.automation_response_time') }}ms
+
+          Analyze patterns and suggest:
+          1. Performance improvements
+          2. Logic optimizations
+          3. New automation opportunities
+          4. Redundant automation removal
+        agent_id: conversation.google_generative_ai
+      response_variable: optimization_suggestions
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.automation_suggestions
+        value: "{{ optimization_suggestions.response.speech.plain.speech }}"
+
+# Context-Aware Reminder System
+ai_smart_reminders:
+  alias: "AI Smart Reminders"
+  description: "AI creates intelligent, context-aware reminders"
+  fields:
+    reminder_task:
+      description: "What to be reminded about"
+      example: "water the plants"
+    context:
+      description: "Any relevant context"
+      example: "only if sunny for 3 days"
+  sequence:
+    - service: conversation.process
+      data:
+        text: >
+          Create a smart reminder for: {{ reminder_task }}
+          Context: {{ context }}
+
+          Consider:
+          - Current weather and forecast
+          - Time of day and day of week
+          - Seasonal factors
+          - Home occupancy patterns
+          - Related automation triggers
+
+          Suggest the optimal timing and conditions for this reminder.
+        agent_id: conversation.anthropic
+      response_variable: smart_reminder
+    - service: automation.create
+      data:
+        alias: "AI Reminder: {{ reminder_task }}"
+        trigger:
+          platform: template
+          value_template: "{{ smart_reminder.response.speech.plain.speech | regex_search('trigger:(.+)', 1) }}"
+        action:
+          - service: notify.mobile_app
+            data:
+              message: "Smart Reminder: {{ reminder_task }}"
+              title: "🤖 AI Reminder"
