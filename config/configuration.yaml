@@ -10,6 +10,20 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+# MQTT Integration for Zigbee2MQTT
+mqtt:
+  # Connection details (auto-configured when using add-ons)
+  # broker: core-mosquitto
+  # port: 1883
+  discovery: true
+  discovery_prefix: homeassistant
+  birth_message:
+    topic: 'homeassistant/status'
+    payload: 'online'
+  will_message:
+    topic: 'homeassistant/status'
+    payload: 'offline'
+
 # Anthropic Claude Integration
 anthropic:
   api_key: !secret anthropic_api_key

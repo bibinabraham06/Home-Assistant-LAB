@@ -1,11 +1,12 @@
-# 🤖 Advanced Home Assistant AI Integration Setup v2.0.0
+# 🤖 Advanced Home Assistant AI Integration Setup v2.1.0
 
-**Complete, organized repository for production-ready AI-powered Home Assistant with ChatGPT, Claude, and Gemini Pro**
+**Complete, organized repository for production-ready AI-powered Home Assistant with ChatGPT, Claude, Gemini Pro, and Zigbee2MQTT**
 
-## 🏷️ Current Version: v2.0.0 (Organized Structure)
+## 🏷️ Current Version: v2.1.0 (Zigbee Integration Added)
 - **Easy Integration**: Modular directory structure
 - **Future-Proof**: Semantic versioning and compatibility tracking
 - **Production-Ready**: Complete security, documentation, and examples
+- **NEW**: Zigbee2MQTT support for 3000+ Zigbee devices
 
 ## 📁 Quick Navigation
 
@@ -42,6 +43,7 @@ This repository contains a complete Home Assistant setup featuring:
 - **Multi-AI Integration**: ChatGPT (GPT-4o), Claude 3.5 Sonnet, and Gemini Pro
 - **Intelligent AI Routing**: Automatic selection of optimal AI for each task
 - **Local Privacy**: Piper TTS and Whisper STT for local processing
+- **Zigbee2MQTT Integration**: Control 3000+ Zigbee devices (lights, sensors, switches, etc.)
 - **Dual-VLAN Network**: Secure network segmentation (VLAN 1 + VLAN 30)
 - **Advanced Automations**: AI-powered decision making and optimization
 - **Enterprise Security**: Entity exposure controls and API key management
@@ -51,6 +53,7 @@ This repository contains a complete Home Assistant setup featuring:
 - ✅ **Triple-AI Ecosystem**: ChatGPT, Claude, and Gemini working in harmony
 - ✅ **Smart Task Routing**: Right AI for the right job automatically
 - ✅ **Local + Cloud Hybrid**: Privacy-first with cloud intelligence when needed
+- ✅ **Zigbee Device Control**: Voice-controlled Zigbee lights, sensors, and switches
 - ✅ **Production Ready**: Complete with security, monitoring, and documentation
 - ✅ **Cost Optimized**: Efficient usage across multiple AI providers
 
@@ -136,8 +139,9 @@ This repository contains a complete Home Assistant setup featuring:
 
 1. **Follow Step-by-Step Guide**: [`guides/INSTALLATION.md`](guides/INSTALLATION.md)
 2. **Configure API Keys**: [`guides/API_SETUP.md`](guides/API_SETUP.md)
-3. **Learn Voice Commands**: [`guides/VOICE_COMMANDS.md`](guides/VOICE_COMMANDS.md)
-4. **Validate Deployment**: [`docs/VALIDATION.md`](docs/VALIDATION.md)
+3. **Setup Zigbee Devices**: [`guides/ZIGBEE2MQTT_SETUP.md`](guides/ZIGBEE2MQTT_SETUP.md) ⭐ NEW
+4. **Learn Voice Commands**: [`guides/VOICE_COMMANDS.md`](guides/VOICE_COMMANDS.md)
+5. **Validate Deployment**: [`docs/VALIDATION.md`](docs/VALIDATION.md)
 
 ### Hardware Migration (Optional)
 
@@ -333,10 +337,11 @@ data:
 
 ## 🏷️ Version Management
 
-### Current Version: **v2.0.0** (Organized Structure)
+### Current Version: **v2.1.0** (Zigbee Integration)
 
 **Git Tags Available:**
-- `v2.0.0` - Current organized structure release
+- `v2.1.0` - **Current release** with Zigbee2MQTT support
+- `v2.0.0` - Organized structure release
 - `ai-integration-complete` - All AI providers integrated
 - `voice-processing-ready` - Local voice processing complete
 - `security-hardened` - Security features implemented
@@ -346,13 +351,14 @@ data:
 
 | Version | Home Assistant | AI Models | Features |
 |---------|---------------|-----------|----------|
+| v2.1.0 | 2025.9.4+ | Claude 3.5, GPT-4o, Gemini 1.5 Pro | Full AI + Voice + Zigbee2MQTT |
 | v2.0.0 | 2025.9.4+ | Claude 3.5, GPT-4o, Gemini 1.5 Pro | Full AI + Voice |
 | v1.1.0 | 2025.9.4+ | Claude 3.5, GPT-4o, Gemini 1.5 Pro | Full AI Integration |
 | v1.0.0 | 2025.9.4+ | Basic AI setup | Initial Release |
 
 ### Future Roadmap
-- **v2.1.0**: Extended automation examples
-- **v2.2.0**: Additional AI provider support
+- **v2.2.0**: Extended automation examples with Zigbee devices
+- **v2.3.0**: Additional AI provider support
 - **v3.0.0**: Home Assistant 2026.x compatibility
 
 ## 📁 Repository Structure
